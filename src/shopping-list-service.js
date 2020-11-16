@@ -1,8 +1,8 @@
 const ShoppingListService = {
-  getAllArticles(knex) {
+  getAllShoppingItems(knex) {
     return knex.select("*").from("shopping_list");
   },
-  insertArticle(knex, newItem) {
+  insertItem(knex, newItem) {
     return knex
       .insert(newItem)
       .into("shopping_list")
@@ -14,10 +14,10 @@ const ShoppingListService = {
   getById(knex, id) {
     return knex.from("shopping_list").select("*").where("id", id).first();
   },
-  deleteArticle(knex, id) {
+  deleteItem(knex, id) {
     return knex("shopping_list").where({ id }).delete();
   },
-   updateArticle(knex, id, newItemFields) {
+   updateItem(knex, id, newItemFields) {
    return knex('shopping_list')
      .where({ id })
      .update(newItemFields)
