@@ -7,35 +7,6 @@ const knexInstance = knex({
   connection: process.env.DB_URL,
 });
 
-console.log("knex and driver installed correctly");
-
-// const q1 = knexInstance('amazong_products').select('*').toQuery()
-// const q2 = knexInstance.from('amazong_products').select('*').toQuery()
-
-// console.log('q1:', q1)
-// console.log('q2:', q2)
-
-// knexInstance
-//   .select('product_id', 'name', 'price', 'category')
-//   .from('amazong_products')
-//   .where({ name: 'Point of view gun' })
-//   .first()
-//   .then(result => {
-//     console.log(result)
-//   })
-
-//   const qry = knexInstance
-//   .select('product_id', 'name', 'price', 'category')
-//   .from('amazong_products')
-//   .where({ name: 'Point of view gun' })
-//   .first()
-//   .toQuery()
-//   // .then(result => {
-//   //   console.log(result)
-//   // })
-
-// console.log(qry)
-
 function searchByProduceName(searchTerm) {
   knexInstance
     .select('product_id', 'name', 'price', 'category')
@@ -73,4 +44,26 @@ function paginateProducts(page) {
     })
 }
 
-getProductsWithImages()
+// getProductsWithImages()
+
+function mostPopularVideosForDays(days) {
+  knexInstance
+    .select('video_name', 'region')
+    .count('date_viewed AS views')
+    .where(
+      'date_viewed',
+      '>',
+      knexInstance.raw(`now() - '?? days'::INTERVAL`, days)
+    )
+    .from('whopipe_video_views')
+    .groupBy('video_name', 'region')
+    .orderBy([
+      { column: 'region', order: 'ASC' },
+      { column: 'views', order: 'DESC' },
+    ])
+    .then(result => {
+      console.log(result)
+    })
+}
+
+mostPopularVideosForDays(30)
